@@ -22,7 +22,7 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'body' => $this->faker->paragraph($nbSentences = 4, $variableNbSentences = true),
         ];
     }
 }
