@@ -19,4 +19,12 @@ use Illuminate\Support\Facades\Route;
         }
     }
 
+    // parse correctly the dates
+    if (!function_exists('formatDate')) {
+        function formatDate($date)
+        {
+            return ucfirst(utf8_encode ($date->formatLocalized('%d %B %Y')));
+        }
+      }
+
 }

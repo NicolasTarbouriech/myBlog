@@ -4311,6 +4311,9 @@ body.search-is-visible {
     fill: white;
 }
 
+.s-styles {
+  padding-bottom: var(--vspace-4);
+}
 /* ------------------------------------------------------------------- 
  * responsive:
  * hero

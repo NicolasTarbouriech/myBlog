@@ -5,9 +5,12 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-   <title>{{ config('app.name') }}</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <title>{{ isset($post) && $post->seo_title ? $post->seo_title :  config('app.name') }}</title>
+    <meta name="description" content="{{ isset($post) && $post->meta_description ? $post->meta_description : __(config('app.description')) }}">
+    <meta name="author" content="{{ isset($post) ? $post->user->name : __(config('app.author')) }}">
+    @if(isset($post) && $post->meta_keywords)
+        <meta name="keywords" content="{{ $post->meta_keywords }}">
+    @endif
 
     <!-- mobile specific metas
     ================================================== -->
@@ -45,7 +48,8 @@
 
     <!-- header
     ================================================== -->
-    <header class="s-header">
+    <header class="s-header @unless(currentRoute('home')) s-header--opaque @endunless">
+
         <div class="s-header__logo">
             <a class="logo" href="{{ route('home') }}">
                 <img src="{{ asset('images/logo.svg') }}" alt="Homepage">
@@ -66,10 +70,42 @@
                         <a href="#" title="">@lang('Categories')</a>
                         <ul class="sub-menu">
                             @foreach($categories as $category)
-                                <li><a href="#">{{ $category->title }}</a></li>
+                                <li><a href="{{ route('category', $category->slug) }}">{{ $category->title }}</a></li>
                             @endforeach
                         </ul>
                     </li>
+                    @guest   
+                        @request('register')
+                            <li class="current">
+                                <a href="{{ request()->url() }}">@lang('Register')</a>
+                            </li>
+                        @endrequest                     
+                        <li {{ currentRoute('login') }}>
+                            <a href="{{ route('login') }}">@lang('Login')</a>
+                        </li>
+                        @request('forgot-password')
+                            <li class="current">
+                                <a href="{{ request()->url() }}">@lang('Password')</a>
+                            </li>
+                        @endrequest
+                        @request('reset-password/*')
+                            <li class="current">
+                                <a href="{{ request()->url() }}">@lang('Password')</a>
+                            </li>
+                        @endrequest
+                    @else
+                        <li>                                
+                            <form action="{{ route('logout') }}" method="POST" hidden>
+                                @csrf                                
+                            </form>
+                            <a 
+                                href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); this.previousElementSibling.submit();">
+                                @lang('Logout')
+                            </a>
+                        </li>
+                    @endguest
+                   
                 </ul>
 
                 <a href="#0" title="@lang('Close Menu')" class="s-header__overlay-close close-mobile-menu">@lang('Close')</a>
@@ -85,10 +121,10 @@
             <div class="s-header__search-inner">
                 <div class="row wide">
 
-                    <form role="search" method="get" class="s-header__search-form" action="#">
+                    <form role="search" method="get" class="s-header__search-form" action="{{ Route('posts.search') }}">
                         <label>
                             <span class="h-screen-reader-text">@lang('Search for:')</span>
-                            <input type="search" class="s-header__search-field" placeholder="Search for..." value="" name="s" title="Search for:" autocomplete="off">
+                            <input id="search" type="search" name="search" class="s-header__search-field" placeholder="@lang('Search for...')" title="@lang('Search for:')" autocomplete="off">
                         </label>
                         <input type="submit" class="s-header__search-submit" value="Search"> 
                     </form>
@@ -103,17 +139,18 @@
         <a class="s-header__search-trigger" href="#">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.982 17.983"><path fill="#010101" d="M12.622 13.611l-.209.163A7.607 7.607 0 017.7 15.399C3.454 15.399 0 11.945 0 7.7 0 3.454 3.454 0 7.7 0c4.245 0 7.699 3.454 7.699 7.7a7.613 7.613 0 01-1.626 4.714l-.163.209 4.372 4.371-.989.989-4.371-4.372zM7.7 1.399a6.307 6.307 0 00-6.3 6.3A6.307 6.307 0 007.7 14c3.473 0 6.3-2.827 6.3-6.3a6.308 6.308 0 00-6.3-6.301z"/></svg>
         </a>
-    </header> <!-- end s-header -->
+        
+    </header>
 
 
     <!-- hero
     ================================================== -->
-    @yield('hero') <!-- end s-hero -->
+    @yield('hero')
 
 
     <!-- content
     ================================================== -->
-    <section class="s-content s-content--no-top-padding">
+    <section class="s-content @if(currentRoute('home')) s-content--no-top-padding @endif">
 
         @yield('main')
 
