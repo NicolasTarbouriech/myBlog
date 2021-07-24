@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use UniSharp\LaravelFilemanager\Lfm;
 use App\Http\Controllers\Front\{
     PostController as FrontPostController,
-    CommentController as FrontCommentController
+    CommentController as FrontCommentController,
+    PageController as FrontPageController,
+    ContactController as FrontContactController,
 };
 
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => 'auth'], function () {
@@ -30,3 +32,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+Route::resource('contacts', FrontContactController::class, ['only' => ['create', 'store']]);
+Route::name('page')->get('page/{page:slug}', FrontPageController::class);

@@ -6,6 +6,7 @@ use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Events\ModelCreated;
 
 class Comment extends Model
 {
@@ -30,4 +31,8 @@ class Comment extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    protected $dispatchesEvents = [
+        'created' => ModelCreated::class,
+    ];
 }
