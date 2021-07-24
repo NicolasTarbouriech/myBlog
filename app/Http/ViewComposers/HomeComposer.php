@@ -2,8 +2,10 @@
 
 namespace App\Http\ViewComposers;
 
-use Illuminate\View\View;
+use App\Models\Page;
+use App\Models\Follow;
 use App\Models\Category;
+use Illuminate\View\View;
 
 class HomeComposer
 {
@@ -18,6 +20,8 @@ class HomeComposer
     {
         $view->with([
             'categories' => Category::has('posts')->get(),
+            'pages'      => Page::select('slug', 'title')->get(),
+            'follows'    => Follow::all(),
         ]);
     }
 }
