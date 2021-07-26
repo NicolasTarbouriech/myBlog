@@ -21,7 +21,7 @@ class Admin
         if ($user && $user->role === 'admin') {
             return $next($request);
         }
-        
+
         return redirect()->route('home');
     }
 }

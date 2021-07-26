@@ -11,111 +11,114 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/css/adminlte.min.css" />
-</head>
-<body class="hold-transition sidebar-mini">
-<div class="wrapper">
+    @yield('css')
+  </head>
+  <body class="hold-transition sidebar-mini">
+  <div class="wrapper">
 
-  <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->
         <ul class="navbar-nav">      
-        <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="{{ route('home') }}" class="nav-link">@lang('Show blog')</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <form action="{{ route('logout') }}" method="POST" hidden>
-            @csrf                                
-            </form>
-            <a class="nav-link"
-                href="{{ route('logout') }}"
-                onclick="event.preventDefault(); this.previousElementSibling.submit();">
-                @lang('Logout')
-            </a>
-        </li>
-        </ul>
+            <li class="nav-item">
+              <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+              <a href="{{ route('home') }}" class="nav-link">@lang('Show blog')</a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+              <form action="{{ route('logout') }}" method="POST" hidden>
+                @csrf                                
+              </form>
+              <a class="nav-link"
+                  href="{{ route('logout') }}"
+                  onclick="event.preventDefault(); this.previousElementSibling.submit();">
+                  @lang('Logout')
+              </a>
+            </li>
+      </ul>
 
     </nav>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <!-- Sidebar -->
-        <div class="sidebar">
+      <!-- Sidebar -->
+      <div class="sidebar">
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                @foreach(config('menu') as $name => $elements)
-                    @if($elements['role'] === 'redac' || auth()->user()->isAdmin())
-                        @isset($elements['children'])
-                            <li class="nav-item has-treeview {{ menuOpen($elements['children']) }}">
-                                <a href="#" class="nav-link {{ currentChildActive($elements['children']) }}">
-                                    <i class="nav-icon fas fa-{{ $elements['icon'] }}"></i>
-                                    <p>
-                                        @lang($name)
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    @foreach($elements['children'] as $child)
-                                        @if(($child['role'] === 'redac' || auth()->user()->isAdmin()) && $child['name'] !== 'fake')
-                                            <x-back.menu-item 
-                                                :route="$child['route']" 
-                                                :sub=true>
-                                                @lang($child['name'])
-                                            </x-back.menu-item>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @else
-                            <x-back.menu-item 
-                                :route="$elements['route']" 
-                                :icon="$elements['icon']">
-                                @lang($name)
-                            </x-back.menu-item>
-                        @endisset
-                    @endif
-                @endforeach
-            </ul>
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+            @foreach(config('menu') as $name => $elements)
+                @if($elements['role'] === 'redac' || auth()->user()->isAdmin())
+                    @isset($elements['children'])
+                        <li class="nav-item has-treeview {{ menuOpen($elements['children']) }}">
+                            <a href="#" class="nav-link {{ currentChildActive($elements['children']) }}">
+                                <i class="nav-icon fas fa-{{ $elements['icon'] }}"></i>
+                                <p>
+                                    @lang($name)
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @foreach($elements['children'] as $child)
+                                    @if(($child['role'] === 'redac' || auth()->user()->isAdmin()) && $child['name'] !== 'fake')
+                                        <x-back.menu-item 
+                                            :route="$child['route']" 
+                                            :sub=true>
+                                            @lang($child['name'])
+                                        </x-back.menu-item>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </li>
+                    @else
+                        <x-back.menu-item 
+                            :route="$elements['route']" 
+                            :icon="$elements['icon']">
+                            @lang($name)
+                        </x-back.menu-item>
+                    @endisset
+                @endif
+            @endforeach
+
+          </ul>
         </nav>
         <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
+      </div>
+      <!-- /.sidebar -->
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-12">
-                        <h1 class="m-0 text-dark">@lang($title)</h1>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
-
-        <!-- Main content -->
-        <div class="content">
+      <!-- Content Header (Page header) -->
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
         <div class="container-fluid">
-            @yield('main')
+          <div class="row mb-2">
+            <div class="col-sm-12">
+              <h1 class="m-0 text-dark">@lang($title)</h1>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
         </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+        <div class="container-fluid">
+          @yield('main')
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
 
     <!-- Main Footer -->
     <footer class="main-footer">
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2021 {{ config('app.name', 'Laravel') }}.</strong>
+      <!-- Default to the left -->
+      <strong>Copyright &copy; 2021 {{ config('app.name', 'Laravel') }}.</strong>
     </footer>
 </div>
 <!-- ./wrapper -->
@@ -128,5 +131,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js" ></script>
 <!-- AdminLTE App -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/js/adminlte.min.js"></script>
+@yield('js')
 </body>
 </html>
