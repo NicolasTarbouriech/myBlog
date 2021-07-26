@@ -107,6 +107,11 @@
                                 @lang('Logout')
                             </a>
                         </li>
+                        @if(auth()->user()->role != 'user')
+                            <li>
+                                <a href="{{ url('admin') }}">@lang('Administration')</a>
+                            </li>
+                        @endif
                     @endguest
                    
                 </ul>

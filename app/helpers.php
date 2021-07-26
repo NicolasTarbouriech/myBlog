@@ -5,11 +5,14 @@ use Illuminate\Support\Facades\Route;
     // function to find an image
     if (!function_exists('getImage')) {
         function getImage($post, $thumb = false)
-        {   
+        {
             $url = "storage/photos/{$post->user->id}";
-            if($thumb) $url .= '/thumbs';
+            if ($thumb) {
+                $url .= '/thumbs';
+            }
             return asset("{$url}/{$post->image}");
         }
+    }
 
     // We add an helper in order to get the active road & to put the right class
     if (!function_exists('currentRoute')) {
@@ -25,6 +28,38 @@ use Illuminate\Support\Facades\Route;
         {
             return ucfirst(utf8_encode ($date->formatLocalized('%d %B %Y')));
         }
-      }
+    }
 
-}
+    if (!function_exists('currentRouteActive')) {
+        function currentRouteActive(...$routes)
+        {
+            foreach ($routes as $route) {
+                if(Route::currentRouteNamed($route)) return 'active';
+            }
+        }
+    }
+
+      if (!function_exists('currentChildActive')) {
+        function currentChildActive($children)
+        {
+            foreach ($children as $child) {
+                if(Route::currentRouteNamed($child['route'])) return 'active';
+            }
+        }
+    }
+
+      if (!function_exists('menuOpen')) {
+        function menuOpen($children)
+        {
+            foreach ($children as $child) {
+                if(Route::currentRouteNamed($child['route'])) return 'menu-open';
+            }
+        }
+    }
+
+      if (!function_exists('isRole')) {
+        function isRole($role)
+        {
+            return auth()->user()->role === $role;
+        }
+    }
