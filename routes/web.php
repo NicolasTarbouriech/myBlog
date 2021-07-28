@@ -8,7 +8,10 @@ use App\Http\Controllers\Front\{
     ContactController as FrontContactController,
     PageController as FrontPageController
 };
-use App\Http\Controllers\Back\AdminController;
+use App\Http\Controllers\Back\{
+    AdminController,
+    PostController as BackPostController,
+};
 
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => 'auth'], function () {
     Lfm::routes();
