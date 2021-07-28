@@ -69,7 +69,8 @@ class PostsDataTable extends DataTable
                         __('Delete'), 
                         'trash-alt', 
                         __('Really delete this post?')
-                    );
+                    )
+                    ;
         })
         ->rawColumns(['categories', 'comments_count', 'action', 'created_at']);
     }

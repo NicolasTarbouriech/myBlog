@@ -1,17 +1,21 @@
 @extends('back.layout')
+
 @section('css')
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css">
   <style>
     a > * { pointer-events: none; }
   </style>
 @endsection
+
 @section('main') 
   {{ $dataTable->table(['class' => 'table table-bordered table-hover table-sm'], true) }}
 @endsection
+
 @section('js') 
   <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script> 
   <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
   @if(config('app.locale') == 'fr')
     <script>
       (($, DataTable) => {
@@ -50,5 +54,89 @@
       })(jQuery, jQuery.fn.dataTable);
     </script>
   @endif
+
   {{ $dataTable->scripts() }}
+
+  <script>
+    (() => {
+
+        // Variables
+        const headers = {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}', 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+   
+        // Delete 
+        const deleteElement = async e => {              
+            e.preventDefault();
+            Swal.fire({
+              title: e.target.dataset.name,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#DD6B55',
+              confirmButtonText: '@lang('Yes')',
+              cancelButtonText: '@lang('No')',
+              preConfirm: () => {
+                  return fetch(e.target.getAttribute('href'), { 
+                      method: 'DELETE',
+                      headers: headers
+                  })
+                  .then(response => {
+                      if (response.ok) {
+                          e.target.parentNode.parentNode.remove();
+                      } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '@lang('Whoops!')',
+                            text: '@lang('Something went wrong!')'
+                        });  
+                      }
+                  });
+              }
+            });
+        }
+
+        // Valid 
+        const validElement = async e => {
+            e.preventDefault();
+            fetch(e.target.getAttribute('href'), { 
+                method: 'PUT',
+                headers: headers
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.location.reload();             
+                } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: '@lang('Whoops!')',
+                      text: '@lang('Something went wrong!')'
+                  });  
+                }
+            });
+        }
+
+        // Listener wrapper
+        const wrapper = (selector, type, callback, condition = 'true', capture = false) => {
+            const element = document.querySelector(selector);
+            if(element) {
+                document.querySelector(selector).addEventListener(type, e => { 
+                    if(eval(condition)) {
+                        callback(e);
+                    }
+                }, capture);
+            }
+        };
+
+        // Set listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            wrapper('table', 'click', deleteElement, "e.target.matches('.btn-danger')");
+            wrapper('table', 'click', validElement, `e.target.matches('[data-name="valid"]')`);
+        });
+
+    })()
+
+  </script> 
+
 @endsection
