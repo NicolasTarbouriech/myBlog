@@ -1,6 +1,8 @@
 <?php
 namespace App\Repositories;
+use App\Models\Tag;
 use App\Models\Post;
+use Illuminate\Support\Str;
 
 class PostRepository
 
@@ -106,5 +108,46 @@ class PostRepository
                         ->orWhere('body', 'like', "%$search%")
                         ->orWhere('title', 'like', "%$search%");
                     })->paginate($n);
+    }
+
+    public function store($request)
+    {
+        $request->merge([
+            'active' => $request->has('active'),
+            'image' => basename($request->image),
+        ]);
+        $post = $request->user()->posts()->create($request->all());
+        $this->saveCategoriesAndTags($post, $request);
+    }
+
+    protected function saveCategoriesAndTags($post, $request)
+    {
+        // Categorie
+        $post->categories()->sync($request->categories);
+        // Tags
+        $tags_id = [];
+        if($request->tags) {
+            $tags = explode(',', $request->tags);
+            foreach ($tags as $tag) {
+                $tag_ref = Tag::firstOrCreate([
+                    'tag' => ucfirst($tag),
+                    'slug' => Str::slug($tag),
+                ]);
+                $tags_id[] = $tag_ref->id;
+            }
+        }
+        $post->tags()->sync($tags_id);
+    }
+
+    public function update($post, $request)
+    {
+        $request->merge([
+            'active' => $request->has('active'),
+            'image' => basename($request->image),
+        ]);
+
+        $post->update($request->all());
+        
+        $this->saveCategoriesAndTags($post, $request);
     }
 }
