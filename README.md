@@ -7,8 +7,8 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-##  My First Laravel Blog
-
+##  Mon premier Blog Laravel
+ 
 Ce blog laravel est une création de Nicolas Tarbouriech, avec l'aide des cours de laravel 8 disponible sur laravel.sillo.org.
 Ce blog a pour vocation de publier des posts (avec photos), commentaires, et réponses a des commentaires. 
 
